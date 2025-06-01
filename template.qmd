@@ -1,0 +1,98 @@
+---
+title: Invoice of May 2025
+date: today
+format:
+  brandbill-typst: default
+execute: 
+  warning: false
+  message: false
+  echo: false
+params:
+  invoiceID: 0001-invoice
+  company: Yellow Sunflower
+  company_info: |
+    *Joseph Barbier* \
+    75 rue Kléber \
+    33800 Bordeaux, France \
+    SIRET: 978 038 776 00016 
+  client: R for the Rest of Us
+  client_info: |
+    *David Keyes* \
+    Portland, Oregon, USA
+  mainfont: Aptos
+  logo_company: sunflower.png
+  logo_client: rfortherestofus.png
+---
+
+```{r}
+library(tidyverse)
+library(flextable)
+source("togglr.R")
+
+invoice_nb <- params$invoiceID
+year <- 2025
+month <- 04
+hourly_rate <- 40
+
+df_toggl_data <- get_monthly_report(
+    year = year,
+    month = month,
+    user = "Joseph Barbier",
+    hourly_rate = hourly_rate
+) |>
+    mutate(
+        vat_rate = 0,
+        total_with_vat = total_rate * (vat_rate + 1)
+    )
+
+table_data <- df_toggl_data |>
+    mutate(
+        across(c(hourly_rate, total_rate, total_with_vat), function(x) {
+            scales::number(x, suffix = "$")
+        }),
+        vat_rate = scales::percent(vat_rate)
+    ) |>
+    flextable() |>
+    set_header_labels(
+        project = "Project",
+        time_literal = "Quantity",
+        hourly_rate = "Hourly Rate",
+        total_rate = "Total (without VAT)",
+        vat_rate = "VAT Rate",
+        total_with_vat = "Total (with VAT)"
+    ) |>
+    width(j = 1, width = 3.5) |>
+    width(j = c(2:6), width = .75) |>
+    font(part = "all", fontname = params$mainfont) |>
+    bold(part = "header") |>
+    bold(j = 6) |>
+    align(part = "header", align = "center") |>
+    align(j = c(2:6), align = "right") |>
+    border_inner(part = "all") |>
+    border_outer()
+
+table_data
+```
+
+```{r}
+#| output: asis
+cat(
+    "<div style='text-align: right'>",
+    "TOTAL :",
+    scales::number(
+        sum(df_toggl_data$total_rate),
+        suffix = "$**",
+        prefix = "**"
+    ),
+    "</div>"
+)
+```
+
+\
+
+\
+
+VAT not applicable according to article 259-1 of the French Tax General Code (CGI)
+
+
+
