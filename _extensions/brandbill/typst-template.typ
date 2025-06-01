@@ -1,5 +1,3 @@
-
-
 #let article(
   title: none,
   invoiceID: none,
@@ -7,7 +5,7 @@
   due_date: none,
   font: "Aptos",
   logo_company: "sunflower.png",
-  logo_client: "sunflower.png",
+  logo_client: "client_logo.png",
   company: none,
   company_info: none,
   client: none,
@@ -42,13 +40,13 @@
   grid(
     columns: (2fr, 2fr),
     align(left)[#block()[
-        #image(logo_company.text, width: 30%)
+        #image(logo_company.text, width: 1in)
         #text("COMPANY", size: 1.2em) \
         #text(company.text, weight: "bold") \ \
         #text(company_info)
       ]],
-    align(left)[#block(inset: (y: 0.1in))[
-        #image(logo_client.text, width: 30%)
+    align(left)[#block()[
+        #image(logo_client.text, width: 1in)
         #text("CLIENT", size: 1.2em) \
         #text(client.text, weight: "bold") \ \
         #text(client_info)

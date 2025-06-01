@@ -2,6 +2,8 @@
 
 A Quarto extension for creating invoices based on your brand.
 
+![](preview.png)
+
 <br>
 
 ## Installing

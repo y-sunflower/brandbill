@@ -1,3 +1,4 @@
-*.png
 !sunflower.png
 togglr.R
+*_files/
+*.pdf

@@ -11,47 +11,36 @@ execute:
 params:
   invoiceID: 0001-invoice
   due_date: July 1, 2025
-  company: Yellow Sunflower
+  company: Company name
   company_info: |
     *Joseph Barbier* \
-    Bordeaux, France \
-    SIRET: 978 038 776 00016 
+    Paris, France
   logo_company: sunflower.png
-  client: R for the Rest of Us
+  client: Client Name
   client_info: |
-    *David Keyes* \
-    Portland, Oregon, USA
-  logo_client: rfortherestofus.png
+    *Contact of the client* \
+    San Francisco, California, USA
+  logo_client: clientlogo.png
   mainfont: Aptos
 ---
 
 ```{r}
 library(tidyverse)
 library(flextable)
-source("togglr.R")
 
-invoice_nb <- params$invoiceID
-year <- 2025
-month <- 05
-hourly_rate <- 40
+invoice_df <- tibble(
+    project = c("Consultation", "UX Design", "Project Management"),
+    time_literal = c(5, 12, 8),
+    hourly_rate = c(100, 85, 75),
+    total_rate = time_literal * hourly_rate,
+    vat_rate = 0.1,
+    total_with_vat = total_rate * (vat_rate + 1)
+)
 
-invisible(capture.output(
-    df_toggl_data <- get_monthly_report(
-        year = year,
-        month = month,
-        user = "Joseph Barbier",
-        hourly_rate = hourly_rate
-    ) |>
-        mutate(
-            vat_rate = 0,
-            total_with_vat = total_rate * (vat_rate + 1)
-        )
-))
-
-table_data <- df_toggl_data |>
+table_data <- invoice_df |>
     mutate(
         across(c(hourly_rate, total_rate, total_with_vat), function(x) {
-            scales::number(x, suffix = "$")
+            scales::number(x, prefix = "$")
         }),
         vat_rate = scales::percent(vat_rate)
     ) |>
@@ -83,7 +72,7 @@ table_data
 cat(
     "TOTAL :",
     scales::number(
-        sum(df_toggl_data$total_rate),
+        sum(invoice_df$total_rate),
         suffix = "$**",
         prefix = "**"
     )
