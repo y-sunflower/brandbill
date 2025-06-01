@@ -1,7 +1,10 @@
+
+
 #let article(
   title: none,
   invoiceID: none,
   date: none,
+  due_date: none,
   font: "Aptos",
   logo_company: "sunflower.png",
   logo_client: "sunflower.png",
@@ -15,7 +18,7 @@
   set page(
     paper: "us-letter",
     margin: (x: 1in, y: 0.8in),
-    fill: rgb("#f9f7f4"),
+    fill: rgb("#fff"),
   )
   set par(justify: true)
   set text(
@@ -27,10 +30,13 @@
 
   align(left)[#text(title, size: 1.8em, weight: "bold", style: "normal", fill: black)]
   if invoiceID != none {
-    align(right)[#block()[ID: #invoiceID]]
+    align(right)[#block()[#text("ID:", weight: "bold") #invoiceID]]
   }
   if date != none {
-    align(right)[#block()[Date: #date]]
+    align(right)[#block()[#text("Date:", weight: "bold") #date]]
+  }
+  if due_date != none {
+    align(right)[#block()[#text("Due date:", weight: "bold") #due_date]]
   }
 
   grid(

@@ -3,19 +3,11 @@
 $if(title)$
   title: [$title$],
 $endif$
-$if(by-author)$
-  authors: (
-$for(by-author)$
-$if(it.name.literal)$
-    ( name: [$it.name.literal$],
-      affiliation: [$for(it.affiliations)$$it.name$$sep$, $endfor$],
-      email: [$it.email$] ),
-$endif$
-$endfor$
-    ),
-$endif$
 $if(date)$
   date: [$date$],
+$endif$
+$if(params.due_date)$
+  due_date: [$params.due_date$],
 $endif$
 $if(params.invoiceID)$
   invoiceID: [$params.invoiceID$],

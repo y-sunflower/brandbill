@@ -1,6 +1,7 @@
 ---
 title: Invoice of May 2025
 date: today
+date-format: long
 format:
   brandbill-typst: default
 execute: 
@@ -9,19 +10,19 @@ execute:
   echo: false
 params:
   invoiceID: 0001-invoice
+  due_date: July 1, 2025
   company: Yellow Sunflower
   company_info: |
     *Joseph Barbier* \
-    75 rue Kléber \
-    33800 Bordeaux, France \
+    Bordeaux, France \
     SIRET: 978 038 776 00016 
+  logo_company: sunflower.png
   client: R for the Rest of Us
   client_info: |
     *David Keyes* \
     Portland, Oregon, USA
-  mainfont: Aptos
-  logo_company: sunflower.png
   logo_client: rfortherestofus.png
+  mainfont: Aptos
 ---
 
 ```{r}
@@ -31,19 +32,21 @@ source("togglr.R")
 
 invoice_nb <- params$invoiceID
 year <- 2025
-month <- 04
+month <- 05
 hourly_rate <- 40
 
-df_toggl_data <- get_monthly_report(
-    year = year,
-    month = month,
-    user = "Joseph Barbier",
-    hourly_rate = hourly_rate
-) |>
-    mutate(
-        vat_rate = 0,
-        total_with_vat = total_rate * (vat_rate + 1)
-    )
+invisible(capture.output(
+    df_toggl_data <- get_monthly_report(
+        year = year,
+        month = month,
+        user = "Joseph Barbier",
+        hourly_rate = hourly_rate
+    ) |>
+        mutate(
+            vat_rate = 0,
+            total_with_vat = total_rate * (vat_rate + 1)
+        )
+))
 
 table_data <- df_toggl_data |>
     mutate(
@@ -61,8 +64,9 @@ table_data <- df_toggl_data |>
         vat_rate = "VAT Rate",
         total_with_vat = "Total (with VAT)"
     ) |>
-    width(j = 1, width = 3.5) |>
-    width(j = c(2:6), width = .75) |>
+    width(j = 1, width = 2.5) |>
+    width(j = c(2:5), width = 0.75) |>
+    width(j = 6, width = 1.5) |>
     font(part = "all", fontname = params$mainfont) |>
     bold(part = "header") |>
     bold(j = 6) |>
@@ -77,14 +81,12 @@ table_data
 ```{r}
 #| output: asis
 cat(
-    "<div style='text-align: right'>",
     "TOTAL :",
     scales::number(
         sum(df_toggl_data$total_rate),
         suffix = "$**",
         prefix = "**"
-    ),
-    "</div>"
+    )
 )
 ```
 
